@@ -16,13 +16,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   TabController controller;
   @override
     void initState() {
-      // TODO: implement initState
       super.initState();
       controller = TabController(length: 2, vsync: this);
     }
 
   int _currentIndex = 0;
-  //final pageController = PageController();
+
+  int ItemsCountCar = 0;
+
+  void AddItemCar () {
+    setState(() {
+      ItemsCountCar += 1;
+    });
+  }
 
   // uri, tittle, price, descuento
   List<List> itemsClothing = [
@@ -49,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     ],
     [
       'product4.jpeg',
-      'Bolso White and Black',
+      'White and Black',
       '\$20.00',
       '15%',
       'no-favorite'
@@ -86,6 +92,26 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           IconButton(
             icon: Icon(Icons.search, color: Colors.black54,),
             onPressed: () {},
+          ),
+          Stack(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.shopping_cart, color: Colors.black54,),
+                onPressed: () {},
+              ),
+              ItemsCountCar != 0 ? Positioned(
+                right: 2,
+                top: 5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.pinkAccent,
+                  ),
+                  padding: EdgeInsets.all(5),
+                  child: Text(ItemsCountCar.toString()),
+                ),
+              ) : Text('')
+            ],
           )
         ],
         bottom: TabBar(
@@ -124,10 +150,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               crossAxisSpacing: 13,
               crossAxisCount: 2,
               children: List.generate(itemsClothing.length, (index) {
-                return Container(
+                return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      if (itemsClothing[index][4] != 'favorite') {
+                        itemsClothing[index][4] = 'favorite';
+                      } else {
+                        itemsClothing[index][4] = 'no-favorite';
+                      }
+                        
+                    });
+                  },
+                  onDoubleTap: () {
+                    AddItemCar();
+                  },
+                  child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    //border: Border.all(color: Colors.grey[300],  width: 3),
+                    //border: Border.all(color: Colors.pinkAccent,  width: 2),
                   ),
                   child: Column(
                     children: <Widget>[
@@ -204,6 +244,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ),
                     ],
                   )
+                )
                 );
               }),
             ),
